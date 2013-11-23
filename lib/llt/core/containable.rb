@@ -34,6 +34,10 @@ module LLT
         @string
       end
 
+      def as_json
+        @string
+      end
+
       # @return [string] the default xml tag defined for the instances class
       def xml_tag
         self.class.default_xml_tag

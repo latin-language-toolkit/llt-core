@@ -45,7 +45,6 @@ describe LLT::Core::Containable do
     end
 
     describe "#to_xml" do
-
       it "returns the #as_xml value as xml with its default tag" do
         dummy.xml_tag 'test'
         obj = dummy.new('string')
@@ -106,6 +105,19 @@ describe LLT::Core::Containable do
         result = '<a><s><c>a</c></s><s>simple</s><s>sentence</s></a>'
         sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
       end
+    end
+  end
+
+  context "json handling" do
+    describe "#as_json" do
+      it "represent the json value that is used in #to_json, defaults to the string it has been initialized with" do
+        obj = dummy.new('test')
+        obj.as_json.should == 'test'
+      end
+    end
+
+    describe "#to_json" do
+      pending "Not implemented"
     end
   end
 
