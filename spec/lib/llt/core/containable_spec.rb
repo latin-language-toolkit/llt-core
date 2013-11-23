@@ -71,6 +71,32 @@ describe LLT::Core::Containable do
       result = '<a><b><c>a</c></b><b>simple</b><b>sentence</b></a>'
       sentence.to_xml(%w{ a b c }, recursive: true).should == result
     end
+
+    it "falls back to the default tags when not enough custom tags are given" do
+      dummy.xml_tag 's'
+
+      sentence = dummy.new('a simple sentence')
+      token1 = dummy.new('a')
+      token2 = dummy.new('simple')
+      token3 = dummy.new('sentence')
+      token1 << dummy.new('a')
+      sentence << [token1, token2, token3]
+      result = '<a><b><s>a</s></b><b>simple</b><b>sentence</b></a>'
+      sentence.to_xml(%w{ a b }, recursive: true).should == result
+    end
+
+    it "can use a mix of custom and default tags if you pass nils" do
+      dummy.xml_tag 's'
+
+      sentence = dummy.new('a simple sentence')
+      token1 = dummy.new('a')
+      token2 = dummy.new('simple')
+      token3 = dummy.new('sentence')
+      token1 << dummy.new('a')
+      sentence << [token1, token2, token3]
+      result = '<a><s><c>a</c></s><s>simple</s><s>sentence</s></a>'
+      sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
+    end
   end
 
   describe "#container" do
