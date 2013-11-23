@@ -26,8 +26,12 @@ module LLT
         tag = tags.shift || xml_tag
 
         val = recursive && all? { |e| e.respond_to?(:to_xml)} ?
-          recursive_xml(tags) : @string
+          recursive_xml(tags) : as_xml
         wrap_with_xml(tag, val)
+      end
+
+      def as_xml
+        @string
       end
 
       # @return [string] the default xml tag defined for the instances class

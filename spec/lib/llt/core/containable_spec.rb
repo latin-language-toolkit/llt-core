@@ -23,8 +23,21 @@ describe LLT::Core::Containable do
     end
   end
 
+  describe "#as_xml" do
+    it "represent the xml value that is used in #to_xml, defaults to the string it has been initialized with" do
+      obj = dummy.new('test')
+      obj.as_xml.should == 'test'
+    end
+
+    it "can be overwritten" do
+      obj = dummy.new('test')
+      obj.stub(:as_xml) { 'custom' }
+      obj.as_xml.should == 'custom'
+    end
+  end
+
   describe "#to_xml" do
-    it "returns the #to_s value as xml with its default tag" do
+    it "returns the #as_xml value as xml with its default tag" do
       dummy.xml_tag 'test'
       obj = dummy.new('string')
       obj.to_xml.should == '<test>string</test>'
