@@ -23,7 +23,7 @@ module LLT
         # for easier recursion it's solved in a way that might
         # look awkward on first sight
         tags = Array(tags)
-        tag = tags.shift || xml_tag
+        tag = tags.shift || default_xml_tag
 
         val = recursive && all? { |e| e.respond_to?(:to_xml)} ?
           recursive_xml(tags) : as_xml
@@ -38,6 +38,7 @@ module LLT
       def xml_tag
         self.class.default_xml_tag
       end
+      alias_method :default_xml_tag, :xml_tag
 
       def each(&blk)
         @container.each(&blk)
