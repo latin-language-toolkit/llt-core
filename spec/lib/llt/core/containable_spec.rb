@@ -23,79 +23,89 @@ describe LLT::Core::Containable do
     end
   end
 
-  describe "#as_xml" do
-    it "represent the xml value that is used in #to_xml, defaults to the string it has been initialized with" do
-      obj = dummy.new('test')
-      obj.as_xml.should == 'test'
+  context "xml handling" do
+    describe ".xml_tag" do
+      it "sets the classes default xml tag" do
+        dummy.xml_tag('s')
+        instance.xml_tag.should == 's'
+      end
     end
 
-    it "can be overwritten" do
-      obj = dummy.new('test')
-      obj.stub(:as_xml) { 'custom' }
-      obj.as_xml.should == 'custom'
-    end
-  end
+    describe "#as_xml" do
+      it "represent the xml value that is used in #to_xml, defaults to the string it has been initialized with" do
+        obj = dummy.new('test')
+        obj.as_xml.should == 'test'
+      end
 
-  describe "#to_xml" do
-    it "returns the #as_xml value as xml with its default tag" do
-      dummy.xml_tag 'test'
-      obj = dummy.new('string')
-      obj.to_xml.should == '<test>string</test>'
-    end
-
-    it "allows the tag to be given as param" do
-      obj = dummy.new('string')
-      obj.to_xml('tag').should == '<tag>string</tag>'
+      it "can be overwritten" do
+        obj = dummy.new('test')
+        obj.stub(:as_xml) { 'custom' }
+        obj.as_xml.should == 'custom'
+      end
     end
 
-    it "can be called recursively to include the container elements inside the default tag" do
-      dummy.xml_tag 's'
-      other_dummy.xml_tag 'w'
+    describe "#to_xml" do
 
-      sentence = dummy.new('a simple sentence')
-      token1 = other_dummy.new('a')
-      token2 = other_dummy.new('simple')
-      token3 = other_dummy.new('sentence')
-      sentence << [token1, token2, token3]
-      result = '<s><w>a</w><w>simple</w><w>sentence</w></s>'
-      sentence.to_xml(recursive: true).should == result
-    end
+      it "returns the #as_xml value as xml with its default tag" do
+        dummy.xml_tag 'test'
+        obj = dummy.new('string')
+        obj.to_xml.should == '<test>string</test>'
+      end
 
-    it "allows multiple tags given in an Array, which will be used recursively" do
-      sentence = dummy.new('a simple sentence')
-      token1 = dummy.new('a')
-      token2 = dummy.new('simple')
-      token3 = dummy.new('sentence')
-      token1 << dummy.new('a')
-      sentence << [token1, token2, token3]
-      result = '<a><b><c>a</c></b><b>simple</b><b>sentence</b></a>'
-      sentence.to_xml(%w{ a b c }, recursive: true).should == result
-    end
+      it "allows the tag to be given as param" do
+        obj = dummy.new('string')
+        obj.to_xml('tag').should == '<tag>string</tag>'
+      end
 
-    it "falls back to the default tags when not enough custom tags are given" do
-      dummy.xml_tag 's'
+      it "can be called recursively to include the container elements inside the default tag" do
+        dummy.xml_tag 's'
+        other_dummy.xml_tag 'w'
 
-      sentence = dummy.new('a simple sentence')
-      token1 = dummy.new('a')
-      token2 = dummy.new('simple')
-      token3 = dummy.new('sentence')
-      token1 << dummy.new('a')
-      sentence << [token1, token2, token3]
-      result = '<a><b><s>a</s></b><b>simple</b><b>sentence</b></a>'
-      sentence.to_xml(%w{ a b }, recursive: true).should == result
-    end
+        sentence = dummy.new('a simple sentence')
+        token1 = other_dummy.new('a')
+        token2 = other_dummy.new('simple')
+        token3 = other_dummy.new('sentence')
+        sentence << [token1, token2, token3]
+        result = '<s><w>a</w><w>simple</w><w>sentence</w></s>'
+        sentence.to_xml(recursive: true).should == result
+      end
 
-    it "can use a mix of custom and default tags if you pass nils" do
-      dummy.xml_tag 's'
+      it "allows multiple tags given in an Array, which will be used recursively" do
+        sentence = dummy.new('a simple sentence')
+        token1 = dummy.new('a')
+        token2 = dummy.new('simple')
+        token3 = dummy.new('sentence')
+        token1 << dummy.new('a')
+        sentence << [token1, token2, token3]
+        result = '<a><b><c>a</c></b><b>simple</b><b>sentence</b></a>'
+        sentence.to_xml(%w{ a b c }, recursive: true).should == result
+      end
 
-      sentence = dummy.new('a simple sentence')
-      token1 = dummy.new('a')
-      token2 = dummy.new('simple')
-      token3 = dummy.new('sentence')
-      token1 << dummy.new('a')
-      sentence << [token1, token2, token3]
-      result = '<a><s><c>a</c></s><s>simple</s><s>sentence</s></a>'
-      sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
+      it "falls back to the default tags when not enough custom tags are given" do
+        dummy.xml_tag 's'
+
+        sentence = dummy.new('a simple sentence')
+        token1 = dummy.new('a')
+        token2 = dummy.new('simple')
+        token3 = dummy.new('sentence')
+        token1 << dummy.new('a')
+        sentence << [token1, token2, token3]
+        result = '<a><b><s>a</s></b><b>simple</b><b>sentence</b></a>'
+        sentence.to_xml(%w{ a b }, recursive: true).should == result
+      end
+
+      it "can use a mix of custom and default tags if you pass nils" do
+        dummy.xml_tag 's'
+
+        sentence = dummy.new('a simple sentence')
+        token1 = dummy.new('a')
+        token2 = dummy.new('simple')
+        token3 = dummy.new('sentence')
+        token1 << dummy.new('a')
+        sentence << [token1, token2, token3]
+        result = '<a><s><c>a</c></s><s>simple</s><s>sentence</s></a>'
+        sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
+      end
     end
   end
 
@@ -151,13 +161,6 @@ describe LLT::Core::Containable do
       sentence = instance
       sentence << [:token, :token]
       sentence.tokens.should == sentence.container
-    end
-  end
-
-  describe ".xml_tag" do
-    it "sets the classes default xml tag" do
-      dummy.xml_tag('s')
-      instance.xml_tag.should == 's'
     end
   end
 end
