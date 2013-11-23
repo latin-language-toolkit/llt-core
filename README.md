@@ -1,4 +1,4 @@
-# Llt::Core
+# LLT::Core
 
 TODO: Write a gem description
 
