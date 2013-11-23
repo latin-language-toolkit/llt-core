@@ -19,15 +19,15 @@ module LLT
         @string
       end
 
-      def to_xml(tags = nil, recursive: false, indent: 2)
+      def to_xml(tags = nil, recursive: false)
         # for easier recursion it's solved in a way that might
         # look awkward on first sight
         tags = Array(tags)
         tag = tags.shift || xml_tag
 
         val = recursive && all? { |e| e.respond_to?(:to_xml)} ?
-          recursive_xml(tags, indent) : @string
-        wrap_with_xml(tag, indent, val)
+          recursive_xml(tags) : @string
+        wrap_with_xml(tag, val)
       end
 
       # @return [string] the default xml tag defined for the instances class
@@ -57,25 +57,13 @@ module LLT
 
       private
 
-      def wrap_with_xml(tag, indent, string)
-        ind = to_ws(indent)
-        "<#{tag}>\n#{ind}#{string}\n#{ind[0..-3]}</#{tag}>"
+      def wrap_with_xml(tag, string)
+        "<#{tag}>#{string}</#{tag}>"
       end
 
-      def recursive_xml(tags, indent)
-        ind = indent + 2
-        map do |element|
-          element.to_xml(tags.clone, recursive: true, indent: ind)
-        end.join("\n#{to_ws(indent)}")
+      def recursive_xml(tags)
+        map { |element| element.to_xml(tags.clone, recursive: true) }.join
       end
-
-      def to_ws(i)
-        # ugly but faster
-        str = ''
-        i.times { str << ' '}
-        str
-      end
-
 
       module ClassMethods
         def container_alias(al)
