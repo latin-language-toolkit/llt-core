@@ -7,6 +7,13 @@ describe LLT::Core::Containable do
     end
   end
 
+  let(:other_dummy) do
+    Class.new do
+      include LLT::Core::Containable
+    end
+  end
+
+
   let(:instance) { dummy.new('') }
 
   describe "#to_s" do
@@ -26,6 +33,30 @@ describe LLT::Core::Containable do
     it "allows the tag to be given as param" do
       obj = dummy.new('string')
       obj.to_xml('tag').should == '<tag>string</tag>'
+    end
+
+    it "can be called recursively to include the container elements inside the default tag" do
+      dummy.xml_tag 's'
+      other_dummy.xml_tag 'w'
+
+      sentence = dummy.new('a simple sentence')
+      token1 = other_dummy.new('a')
+      token2 = other_dummy.new('simple')
+      token3 = other_dummy.new('sentence')
+      sentence << [token1, token2, token3]
+      result = '<s><w>a</w><w>simple</w><w>sentence</w></s>'
+      sentence.to_xml(recursive: true).should == result
+    end
+
+    it "allows multiple tags given in an Array, which will be used recursively" do
+      sentence = dummy.new('a simple sentence')
+      token1 = dummy.new('a')
+      token2 = dummy.new('simple')
+      token3 = dummy.new('sentence')
+      token1 << dummy.new('a')
+      sentence << [token1, token2, token3]
+      result = '<a><b><c>a</c></b><b>simple</b><b>sentence</b></a>'
+      sentence.to_xml(%w{ a b c }, recursive: true).should == result
     end
   end
 
