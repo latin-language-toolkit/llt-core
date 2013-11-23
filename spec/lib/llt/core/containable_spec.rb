@@ -16,6 +16,19 @@ describe LLT::Core::Containable do
     end
   end
 
+  describe "#to_xml" do
+    it "returns the #to_s value as xml with its default tag" do
+      dummy.xml_tag 'test'
+      obj = dummy.new('string')
+      obj.to_xml.should == '<test>string</test>'
+    end
+
+    it "allows the tag to be given as param" do
+      obj = dummy.new('string')
+      obj.to_xml('tag').should == '<tag>string</tag>'
+    end
+  end
+
   describe "#container" do
     it "returns the contents of the container" do
       instance.container.should == []
@@ -68,6 +81,13 @@ describe LLT::Core::Containable do
       sentence = instance
       sentence << [:token, :token]
       sentence.tokens.should == sentence.container
+    end
+  end
+
+  describe ".xml_tag" do
+    it "sets the classes default xml tag" do
+      dummy.xml_tag('s')
+      instance.xml_tag.should == 's'
     end
   end
 end
