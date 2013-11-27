@@ -154,16 +154,24 @@ describe LLT::Core::Containable do
   end
 
   describe "#include?" do
-    it "redirects to the container" do
+    it "delegates to the container" do
       instance << 1
       instance.include?(1).should be_true
     end
   end
 
   describe "#empty?" do
-    it "redirects to the container" do
+    it "delegates to the container" do
       instance << 1
       instance.should_not be_empty
+    end
+  end
+
+  describe "#[]" do
+    it "delegates to the container" do
+      instance << 1
+      instance[0].should == 1
+      instance[1].should be_nil
     end
   end
 

@@ -15,6 +15,10 @@ module LLT
         @container.flatten!
       end
 
+      def [](arg)
+        @container[arg]
+      end
+
       def to_s
         @string
       end
