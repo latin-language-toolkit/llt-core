@@ -28,7 +28,7 @@ module LLT
       def set_default_options(opts)
         # do not want to capture any service instance here
         relevant_opts = opts.reject { |k, _| used_services.include?(k) == :db }
-        @default_options = DEFAULT_OPTIONS.merge(relevant_opts)
+        @default_options = self.class.default_options.merge(relevant_opts)
       end
 
       def parse_option(opt, options)
@@ -89,6 +89,10 @@ module LLT
     end
 
     module ClassMethods
+      def default_options
+        {}
+      end
+
       def used_services
         @used_services ||= {}
       end
