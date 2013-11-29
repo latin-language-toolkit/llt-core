@@ -9,8 +9,6 @@ module LLT
         klass.extend(ClassMethods)
       end
 
-      DEFAULT_OPTIONS = {}
-
       # Initializes a new service instance and configures its services
       def initialize(options = {})
         configure(options)
