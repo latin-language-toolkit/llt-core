@@ -9,9 +9,12 @@ module LLT
         klass.extend(ClassMethods)
       end
 
+      DEFAULT_OPTIONS = {}
+
       # Initializes a new service instance and configures its services
       def initialize(options = {})
         configure(options)
+        set_default_options(options)
         register
       end
 
@@ -23,6 +26,18 @@ module LLT
       end
 
       private
+
+      def set_default_options(opts)
+        # do not want to capture any service instance here
+        relevant_opts = opts.reject { |k, _| used_services.include?(k) == :db }
+        @default_options = DEFAULT_OPTIONS.merge(relevant_opts)
+      end
+
+      def parse_option(opt, options)
+        # we cannot just do option || true, because some options might
+        # be a totally legitimate false
+        (option = options[opt]).nil? ? @default_options[opt] : option
+      end
 
       # Sets instance variables for all used services.
       def configure(options)
