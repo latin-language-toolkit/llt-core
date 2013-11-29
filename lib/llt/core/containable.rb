@@ -3,11 +3,12 @@ module LLT
     module Containable
       include Enumerable
 
-      attr_reader :container
+      attr_reader :container, :id
 
-      def initialize(string)
+      def initialize(string, id = nil)
         @string = string
         @container = []
+        @id        = id
       end
 
       def <<(obj)
@@ -23,15 +24,15 @@ module LLT
         @string
       end
 
-      def to_xml(tags = nil, recursive: false)
+      def to_xml(tags = nil, indexing: false, recursive: false)
         # for easier recursion it's solved in a way that might
         # look awkward on first sight
         tags = Array(tags)
         tag = tags.shift || default_xml_tag
 
         val = recursive && all? { |e| e.respond_to?(:to_xml)} ?
-          recursive_xml(tags) : as_xml
-        wrap_with_xml(tag, val)
+          recursive_xml(tags, indexing) : as_xml
+        wrap_with_xml(tag, val, indexing)
       end
 
       def as_xml
@@ -70,12 +71,20 @@ module LLT
 
       private
 
-      def wrap_with_xml(tag, string)
-        "<#{tag}>#{string}</#{tag}>"
+      def wrap_with_xml(tag, string, indexing, attrs = {})
+        attrs.merge!(id: @id) if indexing && @id
+        attr = attrs.any? ? " #{to_xml_attrs(attrs)}" : ''
+        "<#{tag}#{attr}>#{string}</#{tag}>"
       end
 
-      def recursive_xml(tags)
-        map { |element| element.to_xml(tags.clone, recursive: true) }.join
+      def to_xml_attrs(attrs)
+        attrs.map { |k, v| %{#{k}="#{v}"} }.join(' ')
+      end
+
+      def recursive_xml(tags, indexing)
+        map do |element|
+          element.to_xml(tags.clone, indexing: indexing, recursive: true)
+        end.join
       end
 
       module ClassMethods
