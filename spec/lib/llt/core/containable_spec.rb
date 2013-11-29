@@ -13,6 +13,11 @@ describe LLT::Core::Containable do
     end
   end
 
+  let(:third_dummy) do
+    Class.new do
+      include LLT::Core::Containable
+    end
+  end
 
   let(:instance) { dummy.new('') }
 
@@ -129,6 +134,23 @@ describe LLT::Core::Containable do
         sentence << token
         result = '<s n="1"><w n="1">word</w></s>'
         sentence.to_xml(indexing: true, recursive: true).should == result
+      end
+
+      it "recursive representation can be inlined" do
+        dummy.xml_tag 's'
+        other_dummy.xml_tag 'w'
+        third_dummy.xml_tag 'f'
+
+        sentence = dummy.new('', 1)
+        token1 = other_dummy.new('', 1)
+        token2 = other_dummy.new('', 2)
+        form1  = third_dummy.new('a', 1)
+        form2  = third_dummy.new('b', 2)
+        token1 << form1
+        token2 << form2
+        sentence << [token1, token2]
+        result = '<f s_n="1" w_n="1" n="1">a</f><f s_n="1" w_n="2" n="2">b</f>'
+        sentence.to_xml(indexing: true, recursive: true, inline: true).should == result
       end
     end
   end
