@@ -29,28 +29,23 @@ module LLT
                              recursive: false,
                              inline: false,
                              attrs: {})
+
         # for easier recursion it's solved in a way that might
         # look awkward on first sight
         tags = Array(tags)
         tag = tags.shift || default_xml_tag
-        attrs = attrs
         end_of_recursion = false
 
         val = if recursive && all? { |e| e.respond_to?(:to_xml)}
-                if inline && indexing
-                  attrs.merge!(inline_id(tag))
-                end
+                attrs.merge!(inline_id(tag)) if inline && indexing
                 recursive_xml(tags, indexing, inline, attrs)
               else
                 end_of_recursion = true
                 as_xml
               end
+
         if inline
-          if end_of_recursion
-            wrap_with_xml(tag, val, indexing, attrs)
-          else
-            val
-          end
+          end_of_recursion ? wrap_with_xml(tag, val, indexing, attrs) : val
         else
           wrap_with_xml(tag, val, indexing, attrs)
         end
