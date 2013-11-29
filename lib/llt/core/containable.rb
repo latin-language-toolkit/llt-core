@@ -71,8 +71,10 @@ module LLT
 
       private
 
+      # id is represented as @n attribute in the xml, as xml:id
+      # is reserved for something else
       def wrap_with_xml(tag, string, indexing, attrs = {})
-        attrs.merge!(id: @id) if indexing && @id
+        attrs.merge!(n: @id) if indexing && @id
         attr = attrs.any? ? " #{to_xml_attrs(attrs)}" : ''
         "<#{tag}#{attr}>#{string}</#{tag}>"
       end
