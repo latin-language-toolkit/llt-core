@@ -4,6 +4,7 @@ module LLT
       include Enumerable
 
       attr_reader :container, :id
+      alias_method :n, :id
 
       def initialize(string, id = nil)
         @string = string

@@ -23,6 +23,20 @@ describe LLT::Core::Containable do
     end
   end
 
+  describe "#id" do
+    it "returns the id it has been initialized with" do
+      obj = dummy.new('test', 1)
+      obj.id.should == 1
+    end
+  end
+
+  describe "#n" do
+    it "is an alias for #id (for xml terminology)" do
+      obj = dummy.new('test', 1)
+      obj.n.should == 1
+    end
+  end
+
   context "xml handling" do
     describe ".xml_tag" do
       it "sets the classes default xml tag" do
