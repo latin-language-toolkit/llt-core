@@ -1,3 +1,5 @@
+require 'json'
+
 module LLT
   module Core
     module Containable
@@ -55,6 +57,12 @@ module LLT
         @string
       end
 
+      def to_json(indexing: false)
+        hsh[json_tag] = as_tag
+        hsh[:id] = @id if indexing
+        hsh.to_json
+      end
+
       def as_json
         @string
       end
@@ -64,6 +72,11 @@ module LLT
         self.class.default_xml_tag
       end
       alias_method :default_xml_tag, :xml_tag
+
+      def json_tag
+        self.class.default_json_tag
+      end
+      alias_method :default_json_tag, :json_tag
 
       def each(&blk)
         @container.each(&blk)
@@ -131,6 +144,17 @@ module LLT
 
         def default_xml_tag
           @default_xml_tag
+        end
+
+        # Defines the default xml tag used by #to_json
+        # Falls back to the default_xml_tag when nothing
+        # is provided
+        def json_tag(tag)
+          @default_json_tag = tag
+        end
+
+        def default_json_tag
+          @default_json_tag || @default_xml_tag
         end
       end
     end

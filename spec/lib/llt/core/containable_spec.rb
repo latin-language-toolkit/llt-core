@@ -164,7 +164,26 @@ describe LLT::Core::Containable do
     end
 
     describe "#to_json" do
-      pending "Not implemented"
+      it "returns the object as JSON" do
+        dummy.json_tag 'sentence'
+
+        obj = dummy.new('test')
+        obj.to_json.should == %({"sentence":"test"})
+      end
+
+      it "falls back to the xml tag when no separate json tag is provided" do
+        dummy.xml_tag 's'
+
+        obj = dummy.new('test')
+        obj.to_json.should == %({"s":"test"})
+      end
+
+      it "can include indexing as id property" do
+        dummy.json_tag 'a'
+
+        obj = dummy.new('test', 1)
+        obj.to_json(indexing: true).should == %({"a":"test","id":1})
+      end
     end
   end
 
