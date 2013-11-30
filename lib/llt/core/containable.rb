@@ -100,10 +100,10 @@ module LLT
       end
 
       def recursive_xml(tags, indexing, inline, attrs)
-        map do |element|
-          element.to_xml(tags.clone, indexing: indexing, recursive: true,
-                                     inline: inline, attrs: attrs)
-        end.join
+        each_with_object('') do |element, s|
+          s << element.to_xml(tags.clone, indexing: indexing, recursive: true,
+                                          inline: inline, attrs: attrs)
+        end
       end
 
       def merge_id!(attrs)
