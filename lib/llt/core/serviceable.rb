@@ -25,6 +25,12 @@ module LLT
         end
       end
 
+      def fork_instance
+        # Not sure atm how services should be handled here -
+        # decide later.
+        self.class.new(@default_options)
+      end
+
       private
 
       def set_default_options(opts)

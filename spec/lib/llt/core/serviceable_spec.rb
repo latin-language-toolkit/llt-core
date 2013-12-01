@@ -153,6 +153,15 @@ describe LLT::Core::Serviceable do
     end
   end
 
+  describe "#fork_instance" do
+    it "returns a new service instance with the same default options as self" do
+      instance = dummy.new(option1: 1, option2: 2)
+      forked = instance.fork_instance
+      forked.should_not == instance
+      forked.default_options.should == instance.default_options
+    end
+  end
+
   context "private unit tests" do
     describe "#parse_option" do
       context "parses a given option from a given options hash in the light of the default options" do
