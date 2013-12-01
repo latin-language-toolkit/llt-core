@@ -1,4 +1,5 @@
 require 'cgi'
+require 'net/http'
 
 module LLT
   module Core
@@ -10,6 +11,15 @@ module LLT
 
         def u(text)
           CGI.escape(text)
+        end
+
+        # tries to resolve an uri or a text included in the params
+        def extract_text(params)
+          if uri = params[:uri]
+            Net::HTTP.get(URI(uu(uri)))
+          else
+            params[:text]
+          end
         end
 
         def extract_markup_params(params)

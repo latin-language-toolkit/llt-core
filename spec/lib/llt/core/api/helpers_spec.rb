@@ -6,6 +6,12 @@ describe LLT::Core::Api::Helpers do
     Class.new { include LLT::Core::Api::Helpers }.new
   end
 
+  describe "#extract_text" do
+    it "tries to resolve a passed or a given text param" do
+      pending
+    end
+  end
+
   describe "#uu" do
     it "unescapes url strings" do
       url = 'http%3A%2F%2Ftest.com'
