@@ -9,6 +9,8 @@ module LLT
         klass.extend(ClassMethods)
       end
 
+      attr_reader :default_options
+
       # Initializes a new service instance and configures its services
       def initialize(options = {})
         configure(options)
@@ -27,14 +29,24 @@ module LLT
 
       def set_default_options(opts)
         # do not want to capture any service instance here
-        relevant_opts = opts.reject { |k, _| used_services.include?(k) == :db }
+        # taking the to_s root to enable indifferent access and provide
+        # security against DOS attacks...
+        relevant_keys = self.class.default_options.keys.map(&:to_s)
+        relevant_opts = opts.each_with_object({}) do |(k, v), h|
+          h[k.to_sym] = v if relevant_keys.include?(k.to_s)
+        end
         @default_options = self.class.default_options.merge(relevant_opts)
       end
 
       def parse_option(opt, options)
-        # we cannot just do option || true, because some options might
+        # string keys in options are valid
+        #
+        # we cannot just do simple ||'s, because some options might
         # be a totally legitimate false
-        (option = options[opt]).nil? ? @default_options[opt] : option
+        option = options[opt]
+        option = options[opt.to_s] if option.nil?
+
+        option.nil? ? @default_options[opt] : option
       end
 
       # Sets instance variables for all used services.

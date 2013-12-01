@@ -13,6 +13,13 @@ describe LLT::Core::Serviceable do
       def service_name
         :dummy_service
       end
+
+      def self.default_options
+        {
+          option1: false,
+          option2: true
+        }
+      end
     end
   end
 
@@ -32,6 +39,11 @@ describe LLT::Core::Serviceable do
 
     instance.a_service = 2
     instance.a_service.should == 2
+  end
+
+  it "provides a reader for the instance's default options" do
+    instance = dummy.new
+    instance.default_options.should == { option1: false, option2: true }
   end
 
   describe ".uses_***" do
@@ -61,7 +73,6 @@ describe LLT::Core::Serviceable do
 
       context "without options" do
         # service class is usually LLT::Service or nothing
-
         it "tries to obtain a service registered in the service class" do
           service_class.stub(:fetch) { :registered_service }
           service_class.stub(:registered?) { true }
@@ -109,6 +120,25 @@ describe LLT::Core::Serviceable do
         instance.a_service.should be_nil
       end
     end
+
+    context "with default options passed in" do
+      it "sets them only if they appear in Class.default_options" do
+        instance = dummy.new(option3: 3)
+        instance.default_options.should == { option1: false, option2: true }
+      end
+
+      it "strings as keys are valid as well", :focus do
+        instance = dummy.new('option1' => 1)
+        instance.default_options.should == { option1: 1, option2: true }
+      end
+
+      it "services are not saved as default options" do
+        dummy.uses_a_service { 1 }
+        instance = dummy.new(a_service: 2)
+        instance.a_service.should == 2
+        instance.default_options.should == { option1: false, option2: true }
+      end
+    end
   end
 
   describe "#register!" do
@@ -120,6 +150,27 @@ describe LLT::Core::Serviceable do
 
       service_class.should receive(:register).once
       service.register!
+    end
+  end
+
+  context "private unit tests" do
+    describe "#parse_option" do
+      context "parses a given option from a given options hash in the light of the default options" do
+        it "retains legitimate false values" do
+          instance = dummy.new
+          # just repeating here for clarification
+          instance.default_options.should == { option1: false, option2: true }
+
+          option = instance.send(:parse_option, :option1, { option3: 3 })
+          option.should == false
+        end
+
+        it "works with Symbols and Strings as keys in the options hash" do
+          instance = dummy.new
+          option = instance.send(:parse_option, :option2, { 'option2' => false })
+          option.should == false
+        end
+      end
     end
   end
 end
