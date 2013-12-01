@@ -125,7 +125,7 @@ describe LLT::Core::Containable do
         sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
       end
 
-      it "can include the id of an element, as @n attribute", :focus do
+      it "can include the id of an element, as @n attribute" do
         dummy.xml_tag 's'
         other_dummy.xml_tag 'w'
 

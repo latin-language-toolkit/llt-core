@@ -127,7 +127,7 @@ describe LLT::Core::Serviceable do
         instance.default_options.should == { option1: false, option2: true }
       end
 
-      it "strings as keys are valid as well", :focus do
+      it "strings as keys are valid as well" do
         instance = dummy.new('option1' => 1)
         instance.default_options.should == { option1: 1, option2: true }
       end
