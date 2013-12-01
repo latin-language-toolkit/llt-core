@@ -4,9 +4,13 @@ module LLT
   module Core
     module Api
       module Helpers
-        #def uh(text)
-        #  CGI.unescape_html(text)
-        #end
+        def uu(text)
+          CGI.unescape(text)
+        end
+
+        def u(text)
+          CGI.escape(text)
+        end
 
         def extract_markup_params(params)
           mu_params = %i{ recursive indexing inline }

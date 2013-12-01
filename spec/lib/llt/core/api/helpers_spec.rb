@@ -6,9 +6,17 @@ describe LLT::Core::Api::Helpers do
     Class.new { include LLT::Core::Api::Helpers }.new
   end
 
-  describe "#uh" do
-    it "unescapes html strings" do
-      pending 'Not implemented yet'
+  describe "#uu" do
+    it "unescapes url strings" do
+      url = 'http%3A%2F%2Ftest.com'
+      dummy.uu(url).should == 'http://test.com'
+    end
+  end
+
+  describe "#u" do
+    it "escapes url strings" do
+      url = 'http://test.com'
+      dummy.u(url).should == 'http%3A%2F%2Ftest.com'
     end
   end
 
