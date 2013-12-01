@@ -39,6 +39,22 @@ module LLT
             str << e.to_xml(*extract_markup_params(params))
           end
         end
+
+        def typecast_params!(params)
+          params.each do |k, v|
+            params[k] = typecast(v)
+          end
+        end
+
+        private
+
+        def typecast(val)
+          case val
+          when 'true'  then true
+          when 'false' then false
+          else val
+          end
+        end
       end
     end
   end

@@ -47,4 +47,11 @@ describe LLT::Core::Api::Helpers do
       dummy.to_xml([el1, el2]).should == '<a><b>'
     end
   end
+
+  describe "#typecast_params!" do
+    it "does typecasting for boolean strings" do
+      params = { a: 1, b: 'true' }
+      dummy.typecast_params!(params).should == { a: 1, b: true }
+    end
+  end
 end
