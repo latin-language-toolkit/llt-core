@@ -164,6 +164,10 @@ describe LLT::Core::Containable do
     end
 
     describe "#to_json" do
+      before(:each) do
+        pending('Not implemented yet')
+      end
+
       it "returns the object as JSON" do
         dummy.json_tag 'sentence'
 

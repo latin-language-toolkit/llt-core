@@ -58,9 +58,9 @@ module LLT
       end
 
       def to_json(indexing: false)
-        hsh[json_tag] = as_tag
-        hsh[:id] = @id if indexing
-        hsh.to_json
+        #hsh[json_tag] = as_tag
+        #hsh[:id] = @id if indexing
+        #hsh.to_json
       end
 
       def as_json
