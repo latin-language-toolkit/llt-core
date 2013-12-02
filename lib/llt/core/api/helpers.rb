@@ -36,9 +36,12 @@ module LLT
         def to_xml(elements, params = {})
           root = params[:root] || 'doc'
           root_close = root.match(/^\w+/)[0]
+          tags, options = *extract_markup_params(params)
           body = elements.each_with_object('') do |e, str|
-            tags, options = *extract_markup_params(params)
-            tags.clone! if tags
+            # need to clone, otherwise the tags will get eaten
+            # up in the markup method, but we cannot if tags
+            # is nil
+            tags = tags.clone if tags
             str << e.to_xml(tags, options)
           end
           "#{XML_DECLARATION}<#{root}>#{body}</#{root_close}>"
