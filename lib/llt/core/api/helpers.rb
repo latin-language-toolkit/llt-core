@@ -36,13 +36,17 @@ module LLT
         def to_xml(elements, params = {})
           root = params[:root] || 'doc'
           root_close = root.match(/^\w+/)[0]
+          puts params
           tags, options = *extract_markup_params(params)
           body = elements.each_with_object('') do |e, str|
             # need to clone, otherwise the tags will get eaten
             # up in the markup method, but we cannot if tags
             # is nil
             cloned_tags = (tags ? tags.clone : tags)
-            str << e.to_xml(cloned_tags, options)
+            # Options need to be cloned as well! Time for another
+            # jruby issue: The keywords seem to be eaten up somewhere
+            # along the road. Need to investigate further.
+            str << e.to_xml(cloned_tags, options.clone)
           end
           "#{XML_DECLARATION}<#{root}>#{body}</#{root_close}>"
         end
