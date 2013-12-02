@@ -72,5 +72,10 @@ describe LLT::Core::Api::Helpers do
       params = { a: 1, b: 'true' }
       dummy.typecast_params!(params).should == { a: 1, b: true }
     end
+
+    it "looks into Arrays as well" do
+      params = { a: 'true', b: ['nil', 'false'] }
+      dummy.typecast_params!(params).should == { a: true, b: [nil, false] }
+    end
   end
 end

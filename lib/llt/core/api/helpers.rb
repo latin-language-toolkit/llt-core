@@ -36,7 +36,6 @@ module LLT
         def to_xml(elements, params = {})
           root = params[:root] || 'doc'
           root_close = root.match(/^\w+/)[0]
-          puts params
           tags, options = *extract_markup_params(params)
           body = elements.each_with_object('') do |e, str|
             # need to clone, otherwise the tags will get eaten
@@ -62,11 +61,15 @@ module LLT
         XML_DECLARATION = %{<?xml version="1.0" encoding="UTF-8"?>}
 
         def typecast(val)
-          case val
-          when 'true'  then true
-          when 'false' then false
-          when 'nil'   then nil
-          else val
+          if val.kind_of?(Array)
+            val.map { |e| typecast(e) }
+          else
+            case val
+            when 'true'  then true
+            when 'false' then false
+            when 'nil'   then nil
+            else val
+            end
           end
         end
       end
