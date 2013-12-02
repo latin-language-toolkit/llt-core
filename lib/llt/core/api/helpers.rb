@@ -37,7 +37,9 @@ module LLT
           root = params[:root] || 'doc'
           root_close = root.match(/^\w+/)[0]
           body = elements.each_with_object('') do |e, str|
-            str << e.to_xml(*extract_markup_params(params))
+            tags, options = *extract_markup_params(params)
+            tags.clone! if tags
+            str << e.to_xml(tags, options)
           end
           "#{XML_DECLARATION}<#{root}>#{body}</#{root_close}>"
         end
