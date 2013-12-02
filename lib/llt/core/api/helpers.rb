@@ -15,16 +15,16 @@ module LLT
 
         # tries to resolve an uri or a text included in the params
         def extract_text(params)
-          if uri = params.delete(:uri)
+          if uri = params[:uri]
             Net::HTTP.get(URI(uu(uri)))
           else
-            params.delete(:text)
+            params[:text]
           end
         end
 
         def extract_markup_params(params)
           mu_params = %i{ recursive indexing inline }
-          extracted = [params.delete(:tags)]
+          extracted = [params[:tags]]
           relevant = mu_params.each_with_object({}) do |param, h|
             val = params[param]
             val = params[param.to_s] if val.nil?
@@ -34,7 +34,7 @@ module LLT
         end
 
         def to_xml(elements, params = {})
-          root = params.delete(:root) || 'doc'
+          root = params[:root] || 'doc'
           root_close = root.match(/^\w+/)[0]
           body = elements.each_with_object('') do |e, str|
             str << e.to_xml(*extract_markup_params(params))
