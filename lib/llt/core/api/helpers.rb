@@ -41,8 +41,8 @@ module LLT
             # need to clone, otherwise the tags will get eaten
             # up in the markup method, but we cannot if tags
             # is nil
-            tags = tags.clone if tags
-            str << e.to_xml(tags, options)
+            cloned_tags = (tags ? tags.clone : tags)
+            str << e.to_xml(cloned_tags, options)
           end
           "#{XML_DECLARATION}<#{root}>#{body}</#{root_close}>"
         end
