@@ -29,7 +29,7 @@ describe LLT::Core::Api::Helpers do
   describe "#extract_markup_params" do
     it "extracts the relevant params for markup methods from html params" do
       params = { 'recursive' => true, 'text' => 'test' }
-      dummy.extract_markup_params(params).should == [{ recursive: true }]
+      dummy.extract_markup_params(params).should == [nil, { recursive: true }]
     end
 
     it "returns an array that should be exploded when used with #to_xml" do
@@ -44,7 +44,26 @@ describe LLT::Core::Api::Helpers do
       el1, el2 = double, double
       el1.stub(to_xml: '<a>')
       el2.stub(to_xml: '<b>')
-      dummy.to_xml([el1, el2]).should == '<a><b>'
+      dummy.to_xml([el1, el2]).should =~ /<a><b>/
+    end
+
+    it "includes the xml declaration" do
+      el1 = double
+      el1.stub(to_xml: '<a>')
+      dummy.to_xml([el1]).should =~ /<\?xml version="1\.0" encoding="UTF-8"\?>/
+    end
+
+    it "looks for an optional param 'root', which is used to wrap the xml stream" do
+      el1 = double
+      el1.stub(to_xml: '<a>')
+      res = /<body cite="128">.*<\/body>/
+      dummy.to_xml([el1], { root: 'body cite="128"'}).should =~ res
+    end
+
+    it "its root element defaults to doc" do
+      el1 = double
+      el1.stub(to_xml: '<a>')
+      dummy.to_xml([el1]).should =~ /<doc>.*<\/doc>/
     end
   end
 
