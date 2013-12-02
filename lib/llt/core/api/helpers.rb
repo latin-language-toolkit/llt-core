@@ -1,5 +1,4 @@
 require 'cgi'
-require 'net/http'
 
 module LLT
   module Core
@@ -16,7 +15,7 @@ module LLT
         # tries to resolve an uri or a text included in the params
         def extract_text(params)
           if uri = params[:uri]
-            Net::HTTP.get(URI(uri))
+            get_from_uri(uri)
           else
             params[:text]
           end
@@ -70,6 +69,24 @@ module LLT
             when 'nil'   then nil
             else val
             end
+          end
+        end
+
+        # Net::Http.get is broken in jruby when running in
+        # 2.0 mode - we need to use some different when going
+        # the java route.
+        if RUBY_PLATFORM == 'java'
+          require 'http_client'
+          HTTP_CLIENT = HTTP::Client.new
+
+          def get_from_uri(uri)
+            HTTP_CLIENT.get(uri)
+          end
+        else
+          require 'open-uri'
+
+          def get_from_uri(uri)
+            URI(uri).read
           end
         end
       end
