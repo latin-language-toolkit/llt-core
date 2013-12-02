@@ -65,6 +65,7 @@ module LLT
           case val
           when 'true'  then true
           when 'false' then false
+          when 'nil'   then nil
           else val
           end
         end
