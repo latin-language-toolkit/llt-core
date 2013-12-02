@@ -25,8 +25,8 @@ module LLT
         @string
       end
 
-      def to_xml(tags = nil, indexing: false,
-                             recursive: false,
+      def to_xml(tags = nil, indexing: true,
+                             recursive: true,
                              inline: false,
                              attrs: {})
 
