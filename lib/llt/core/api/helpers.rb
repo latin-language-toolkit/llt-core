@@ -16,7 +16,7 @@ module LLT
         # tries to resolve an uri or a text included in the params
         def extract_text(params)
           if uri = params[:uri]
-            Net::HTTP.get(URI(uu(uri)))
+            Net::HTTP.get(URI(uri))
           else
             params[:text]
           end
