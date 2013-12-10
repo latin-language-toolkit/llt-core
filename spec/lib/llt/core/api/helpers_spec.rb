@@ -32,6 +32,11 @@ describe LLT::Core::Api::Helpers do
       dummy.extract_markup_params(params).should == [nil, { recursive: true }]
     end
 
+    it "extracts the id_as param" do
+      params = { 'id_as' => 'id' }
+      dummy.extract_markup_params(params).should == [nil, { id_as: 'id'} ]
+    end
+
     it "returns an array that should be exploded when used with #to_xml" do
       params = { recursive: true, tags: %w{ a b }}
       extracted = [%w{ a b }, { recursive: true }]

@@ -22,7 +22,7 @@ module LLT
         end
 
         def extract_markup_params(params)
-          mu_params = %i{ recursive indexing inline }
+          mu_params = %i{ recursive indexing inline id_as }
           extracted = [params[:tags]]
           relevant = mu_params.each_with_object({}) do |param, h|
             val = params[param]

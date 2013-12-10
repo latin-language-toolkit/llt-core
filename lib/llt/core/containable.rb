@@ -28,6 +28,7 @@ module LLT
       def to_xml(tags = nil, indexing: true,
                              recursive: true,
                              inline: false,
+                             id_as: 'n',
                              attrs: {})
 
         # for easier recursion it's solved in a way that might
@@ -37,17 +38,17 @@ module LLT
         end_of_recursion = false
 
         val = if recursive && all? { |e| e.respond_to?(:to_xml)}
-                attrs.merge!(inline_id(tag)) if inline && indexing
-                recursive_xml(tags, indexing, inline, attrs)
+                attrs.merge!(inline_id(tag, id_as)) if inline && indexing
+                recursive_xml(tags, indexing, inline, id_as, attrs)
               else
                 end_of_recursion = true
                 as_xml
               end
 
         if inline
-          end_of_recursion ? wrap_with_xml(tag, val, indexing, attrs) : val
+          end_of_recursion ? wrap_with_xml(tag, val, indexing, id_as, attrs) : val
         else
-          wrap_with_xml(tag, val, indexing, attrs)
+          wrap_with_xml(tag, val, indexing, id_as, attrs)
         end
       end
 
@@ -89,8 +90,8 @@ module LLT
 
       # id is represented as @n attribute in the xml, as xml:id
       # is reserved for something else
-      def wrap_with_xml(tag, string, indexing, attrs = {})
-        merge_id!(attrs) if indexing && @id
+      def wrap_with_xml(tag, string, indexing, id_as, attrs = {})
+        merge_id!(id_as, attrs) if indexing && @id
         attr = attrs.any? ? " #{to_xml_attrs(attrs)}" : ''
         "<#{tag}#{attr}>#{string}</#{tag}>"
       end
@@ -99,23 +100,19 @@ module LLT
         attrs.map { |k, v| %{#{k}="#{v}"} }.join(' ')
       end
 
-      def recursive_xml(tags, indexing, inline, attrs)
+      def recursive_xml(tags, indexing, inline, id_as, attrs)
         each_with_object('') do |element, s|
           s << element.to_xml(tags.clone, indexing: indexing, recursive: true,
-                                          inline: inline, attrs: attrs)
+                                          inline: inline, id_as: id_as, attrs: attrs)
         end
       end
 
-      def merge_id!(attrs)
-        attrs.merge!(id_as_xml => @id,)
+      def merge_id!(id_as, attrs)
+        attrs.merge!(id_as => @id,)
       end
 
-      def id_as_xml
-        'n'
-      end
-
-      def inline_id(tag)
-        { "#{tag}_#{id_as_xml}" => @id }
+      def inline_id(tag, id_as)
+        { "#{tag}_#{id_as}" => @id }
       end
 
       module ClassMethods

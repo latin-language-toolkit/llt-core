@@ -125,7 +125,7 @@ describe LLT::Core::Containable do
         sentence.to_xml(['a', nil, 'c'], recursive: true).should == result
       end
 
-      it "can include the id of an element, as @n attribute" do
+      it "can include the id of an element, as @n attribute by default" do
         dummy.xml_tag 's'
         other_dummy.xml_tag 'w'
 
@@ -134,6 +134,13 @@ describe LLT::Core::Containable do
         sentence << token
         result = '<s n="1"><w n="1">word</w></s>'
         sentence.to_xml(indexing: true, recursive: true).should == result
+      end
+
+      it "can represent a custom id attribute identifier" do
+        dummy.xml_tag 's'
+        sentence = dummy.new('test', 1)
+        result = '<s id="1">test</s>'
+        sentence.to_xml(id_as: 'id').should == result
       end
 
       it "recursive representation can be inlined" do
