@@ -7,8 +7,26 @@ describe LLT::Core::Api::Helpers do
   end
 
   describe "#extract_text" do
-    it "tries to resolve a passed or a given text param" do
-      pending
+    context "text param" do
+      it "tries to resolve a passed or a given text param" do
+       dummy.extract_text(:text => "some text").should == "some text" 
+      end
+
+      it "strips away the xml declaration" do
+       dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text" 
+      end
+    end
+
+    context "uri param" do
+      it "calls to the given URI to retrieve the text" do
+        allow(dummy).to receive(:get_from_uri) { "text from uri" }
+        dummy.extract_text(:uri => "some uri").should == "text from uri"
+      end
+
+      it "strips away the xml declaration" do
+        allow(dummy).to receive(:get_from_uri) { %{<?xml version="1.0" encoding="UTF-8"?>text from uri} }
+        dummy.extract_text(:uri => "some uri").should == "text from uri"
+      end
     end
   end
 
