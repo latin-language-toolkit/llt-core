@@ -11,6 +11,10 @@ describe LLT::Core::Api::Helpers do
       it "tries to resolve a passed or a given text param" do
        dummy.extract_text(:text => "some text").should == "some text" 
       end
+
+      it "strips away the xml declaration" do
+       dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text" 
+      end
     end
 
     context "uri param" do

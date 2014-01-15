@@ -14,12 +14,13 @@ module LLT
 
         # tries to resolve an uri or a text included in the params
         def extract_text(params)
-          if uri = params[:uri]
+          text = if uri = params[:uri]
             # strip the xml declaration because it gets added back in at the end and otherwise will be duped
-            get_from_uri(uri).sub(XML_DECLARATION, '')
+            get_from_uri(uri)
           else
             params[:text]
           end
+          text.sub(XML_DECLARATION, '')
         end
 
         def extract_markup_params(params)
