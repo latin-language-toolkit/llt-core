@@ -4,14 +4,6 @@ module LLT
   module Core
     module Api
       module Helpers
-        def uu(text)
-          CGI.unescape(text)
-        end
-
-        def u(text)
-          CGI.escape(text)
-        end
-
         # tries to resolve an uri or a text included in the params
         def extract_text(params)
           text = get_text(params)
