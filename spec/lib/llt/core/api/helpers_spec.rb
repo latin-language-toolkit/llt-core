@@ -9,11 +9,11 @@ describe LLT::Core::Api::Helpers do
   describe "#extract_text" do
     context "text param" do
       it "tries to resolve a passed or a given text param" do
-       dummy.extract_text(:text => "some text").should == "some text" 
+       dummy.extract_text(:text => "some text").should == "some text"
       end
 
       it "strips away the xml declaration" do
-       dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text" 
+       dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text"
       end
     end
 
@@ -28,19 +28,9 @@ describe LLT::Core::Api::Helpers do
         dummy.extract_text(:uri => "some uri").should == "text from uri"
       end
     end
-  end
 
-  describe "#uu" do
-    it "unescapes url strings" do
-      url = 'http%3A%2F%2Ftest.com'
-      dummy.uu(url).should == 'http://test.com'
-    end
-  end
-
-  describe "#u" do
-    it "escapes url strings" do
-      url = 'http://test.com'
-      dummy.u(url).should == 'http%3A%2F%2Ftest.com'
+    it "decodes xml escape characters" do
+      dummy.extract_text(text: 'arma &amp; virum').should == 'arma & virum'
     end
   end
 
