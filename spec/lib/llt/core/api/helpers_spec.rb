@@ -28,6 +28,10 @@ describe LLT::Core::Api::Helpers do
         dummy.extract_text(:uri => "some uri").should == "text from uri"
       end
     end
+
+    it "decodes xml escape characters" do
+      dummy.extract_text(text: 'arma &amp; virum').should == 'arma & virum'
+    end
   end
 
   describe "#extract_markup_params" do

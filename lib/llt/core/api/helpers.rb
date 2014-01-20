@@ -1,15 +1,22 @@
 require 'cgi'
+require 'xml_escape'
 
 module LLT
   module Core
     module Api
       module Helpers
+        include XmlEscape
+
         # tries to resolve an uri or a text included in the params
+        #
+        # strips any incoming xml declaration because it gets added back in at
+        # the end and otherwise will be duped
+        # also decodes xml escape characters like &amp;
         def extract_text(params)
           text = get_text(params)
           # strip the xml declaration because it gets added back in at the
           # end and otherwise will be duped
-          text.sub(XML_DECLARATION, '')
+          xml_decode(text.sub(XML_DECLARATION, ''))
         end
 
         def extract_markup_params(params)
