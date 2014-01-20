@@ -29,8 +29,11 @@ describe LLT::Core::Api::Helpers do
       end
     end
 
-    it "decodes xml escape characters" do
-      dummy.extract_text(text: 'arma &amp; virum').should == 'arma & virum'
+    it "sets xml param to true when there is an xml declaration present" do
+      params = { text: %{<?xml version="1.0"?>some text} }
+      dummy.extract_text(params).should == 'some text'
+      params.should have_key(:xml)
+      params[:xml].should be_true
     end
   end
 

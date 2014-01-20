@@ -11,12 +11,15 @@ module LLT
         #
         # strips any incoming xml declaration because it gets added back in at
         # the end and otherwise will be duped
-        # also decodes xml escape characters like &amp;
+        # if an xml declaration is included, the xml param is set to true
         def extract_text(params)
           text = get_text(params)
-          # strip the xml declaration because it gets added back in at the
-          # end and otherwise will be duped
-          xml_decode(text.sub(XML_DECLARATION, ''))
+          if has_xml_declaration?(text)
+            params[:xml] = true
+            text.sub(XML_DECLARATION_REGEXP, '')
+          else
+            text
+          end
         end
 
         def extract_markup_params(params)
@@ -55,7 +58,12 @@ module LLT
 
         private
 
+        XML_DECLARATION_REGEXP = /<\?xml.*?\?>/
         XML_DECLARATION = %{<?xml version="1.0" encoding="UTF-8"?>}
+
+        def has_xml_declaration?(txt)
+          txt.match(XML_DECLARATION_REGEXP)
+        end
 
         def get_text(params)
           if uri = params[:uri]
