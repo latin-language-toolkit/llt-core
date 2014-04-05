@@ -1,5 +1,5 @@
 module LLT
-  module Core::Strucutes::HashContainable
+  module Core::Structures::HashContainable
     # This class includes HashContainable and should be used as a simplistic
     # container with a stable tag and mostly without any attributes.
     # The id serves as tag.
@@ -9,7 +9,7 @@ module LLT
     #   # the contents of the containable
     # </files>
     class Generic
-      include HashContainable
+      include Core::Structures::HashContainable
 
       def xml_tag
         @id
