@@ -17,10 +17,16 @@ module LLT
           text = get_text(params).force_encoding('UTF-8')
           if has_xml_declaration?(text)
             params[:xml] = true
-            text.sub(XML_DECLARATION_REGEXP, '')
+            text.sub(XML_DECLARATION_REGEXP) do |match|
+              @stored_xml_information = match; ''
+            end
           else
             text
           end
+        end
+
+        def xml_information
+          @stored_xml_information || XML_DECLARATION
         end
 
         def extract_markup_params(params)
@@ -48,7 +54,7 @@ module LLT
             # along the road. Need to investigate further.
             str << e.to_xml(cloned_tags, options.clone)
           end
-          "#{XML_DECLARATION}<#{root}>#{body}</#{root_close}>"
+          "#{xml_information}<#{root}>#{body}</#{root_close}>"
         end
 
         def typecast_params!(params)
@@ -59,7 +65,7 @@ module LLT
 
         private
 
-        XML_DECLARATION_REGEXP = /<\?xml.*?\?>/
+        XML_DECLARATION_REGEXP = /<\?xml.*\?>/m
         XML_DECLARATION = %{<?xml version="1.0" encoding="UTF-8"?>}
 
         def has_xml_declaration?(txt)

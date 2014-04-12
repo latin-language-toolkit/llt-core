@@ -8,12 +8,8 @@ describe LLT::Core::Api::Helpers do
 
   describe "#extract_text" do
     context "text param" do
-      it "tries to resolve a passed or a given text param" do
+      it "extract text given as text param" do
        dummy.extract_text(:text => "some text").should == "some text"
-      end
-
-      it "strips away the xml declaration" do
-       dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text"
       end
     end
 
@@ -34,6 +30,22 @@ describe LLT::Core::Api::Helpers do
       dummy.extract_text(params).should == 'some text'
       params.should have_key(:xml)
       params[:xml].should be_true
+    end
+
+    it "strips away the xml declaration" do
+     dummy.extract_text(:text => %{<?xml version="1.0" encoding="UTF-8"?>some text}).should == "some text"
+    end
+
+    it "strips away other xml information" do
+      txt = %{<?xml version="1.0" encoding="UTF-8"?><?xml-model type="application/xml"\n ?>some text}
+      result = dummy.extract_text(text: txt)
+      result.should == "some text"
+    end
+
+    it "stores this stripped xml information" do
+      txt = %{<?xml version="1.0" encoding="UTF-8"?><?xml-model type="application/xml"\n ?>some text}
+      dummy.extract_text(text: txt)
+      dummy.xml_information.should == %{<?xml version="1.0" encoding="UTF-8"?><?xml-model type="application/xml"\n ?>}
     end
   end
 
@@ -63,10 +75,22 @@ describe LLT::Core::Api::Helpers do
       dummy.to_xml([el1, el2]).should =~ /<a><b>/
     end
 
-    it "includes the xml declaration" do
+    it "includes an xml declaration" do
       el1 = double
       el1.stub(to_xml: '<a>')
       dummy.to_xml([el1]).should =~ /<\?xml version="1\.0" encoding="UTF-8"\?>/
+    end
+
+    context "when an input file contained xml information" do
+      it "uses this information as its own xml header" do
+        xml_info = %{<?xml version="1.0" encoding="utf-8"?><?xml-model type="application/xml"\n ?>}
+        txt = %{#{xml_info}some text}
+        dummy.extract_text(text: txt)
+        dummy.xml_information.should == xml_info
+
+        el1 = double(to_xml: '<a/>')
+        dummy.to_xml([el1]).should == "#{xml_info}<doc><a/></doc>"
+      end
     end
 
     it "looks for an optional param 'root', which is used to wrap the xml stream" do
