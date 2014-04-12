@@ -42,7 +42,7 @@ module LLT
 
         def to_xml(elements, params = {})
           root = params[:root] || 'doc'
-          root_close = root.match(/^\w+/)[0]
+          root_close = root.match(/^(\w|[_-])+/)[0]
           tags, options = *extract_markup_params(params)
           body = elements.each_with_object('') do |e, str|
             # need to clone, otherwise the tags will get eaten
