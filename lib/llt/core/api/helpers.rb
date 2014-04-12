@@ -14,7 +14,7 @@ module LLT
         # the end and otherwise will be duped
         # if an xml declaration is included, the xml param is set to true
         def extract_text(params)
-          text = get_text(params)
+          text = get_text(params).force_encoding('UTF-8')
           if has_xml_declaration?(text)
             params[:xml] = true
             text.sub(XML_DECLARATION_REGEXP, '')
