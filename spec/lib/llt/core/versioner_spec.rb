@@ -20,7 +20,7 @@ describe LLT::Core::Versioner do
 
   describe "#to_xml" do
     it "provides version info in xml format" do
-      result = %{<gem name="#{version.gem_name}" version="#{version.version}"><source href="#{version.source}"/></gem>}
+      result = %{<service name="#{version.gem_name}" version="#{version.version}"><source href="#{version.source}"/></service>}
       version.to_xml.should == result
     end
   end
