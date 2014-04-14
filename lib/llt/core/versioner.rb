@@ -24,7 +24,7 @@ module LLT
       private
 
       def namespace
-        self.class.name.chomp('::Version')
+        self.class.name.chomp('::VersionInfo')
       end
     end
   end

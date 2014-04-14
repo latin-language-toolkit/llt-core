@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe LLT::Core::Versioner do
-  # The version module is included by Version classes exclusively.
+  # The version module is included by VersionInfo classes exclusively.
   # We can therefore test its behaviour directly in the Core's own
-  # Version class.
-  let(:version) { LLT::Core::Version.new }
+  # VersionInfo class.
+  let(:version) { LLT::Core::VersionInfo.new }
 
   describe "#source" do
     it "returns the path to the (GitHub) repository" do
