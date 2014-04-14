@@ -16,9 +16,9 @@ module LLT
       end
 
       def to_xml
-        %{<gem name="#{gem_name}" version="#{version}">} +
+        %{<service name="#{gem_name}" version="#{version}">} +
           %{<source href="#{source}"/>} +
-        %{</gem>}
+        %{</service>}
       end
 
       private
