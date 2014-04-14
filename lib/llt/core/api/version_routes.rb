@@ -5,7 +5,7 @@ module LLT
 
       get("#{route}/version") do
         dependencies.map do |dep_class|
-          versioner = LLT.const_get(dep_class).const_get(:Version).new
+          versioner = LLT.const_get(dep_class).const_get(:VersionInfo).new
           versioner.to_xml
         end.join
       end
