@@ -10,6 +10,10 @@ module LLT
         @container = {}
       end
 
+      def to_s
+        @container.values.map { |val| val.to_s }.join(' ')
+      end
+
       def add(element)
         @container[element.id] = element
       end
